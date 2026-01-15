@@ -1,6 +1,6 @@
-package agenda;
+package agenda.dominio;
 
-enum TipoVia {
+public enum TipoVia {
     CALLE,
     AVENIDA,
     PLAZA,

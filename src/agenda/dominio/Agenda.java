@@ -1,9 +1,10 @@
-package agenda;
+package agenda.dominio;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class Agenda {
+// DCS: Agregamos el modificados public para que pueda ser utilizada en una clase de otro paquete (Main) 
+public class Agenda {
     private List<Contacto> contactos;
     private int siguienteId;
 
@@ -18,8 +19,14 @@ class Agenda {
         return id;
     }
 
-    public void agregarContacto(Contacto c) {
+    // DCS: Agenda CREA el contacto (composición) - por semántica cambiamos agregarContacto por crearContacto.
+    public Contacto crearContacto(String nombre, String apellidos, String email) {
+        int id = this.siguienteId;
+        this.siguienteId = this.siguienteId + 1;
+
+        Contacto c = new Contacto(id, nombre, apellidos, email);
         this.contactos.add(c);
+        return c;
     }
 
     public List<Contacto> listarContactos() {

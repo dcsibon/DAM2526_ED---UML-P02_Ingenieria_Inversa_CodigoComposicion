@@ -1,6 +1,6 @@
-package agenda;
+package agenda.dominio;
 
-enum TipoTelefono {
+public enum TipoTelefono {
     CASA,
     TRABAJO,
     PERSONAL,

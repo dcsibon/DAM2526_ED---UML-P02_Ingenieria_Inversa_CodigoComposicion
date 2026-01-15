@@ -1,7 +1,17 @@
-package agenda;
+package agenda.app;
 
 import java.util.List;
 import java.util.Scanner;
+
+import agenda.dominio.Agenda;
+import agenda.dominio.Contacto;
+
+// DCS: Sobra...
+//import agenda.dominio.Direccion;
+//import agenda.dominio.Telefono;
+
+import agenda.dominio.TipoTelefono;
+import agenda.dominio.TipoVia;
 
 public class Main {
 
@@ -16,9 +26,40 @@ public class Main {
             opcion = leerEntero(sc, "Opción: ");
 
             if (opcion == 1) {
-                Contacto nuevo = crearContacto(sc, agenda.getSiguienteId());
-                agenda.agregarContacto(nuevo);
-                System.out.println("Contacto añadido con ID " + nuevo.getId());
+            	// DCS: Ahora NO se puede hacer new Contacto(...) desde aquí
+
+            	// DCS: Antes...
+            	//Contacto nuevo = crearContacto(sc, agenda.getSiguienteId());
+                //agenda.agregarContacto(nuevo);
+                //System.out.println("Contacto añadido con ID " + nuevo.getId());
+            	
+                String nombre = leerTextoNoVacio(sc, "Nombre: ");
+                String apellidos = leerTextoNoVacio(sc, "Apellidos: ");
+                String email = leerTexto(sc, "Email (opcional): ");
+
+                Contacto c = agenda.crearContacto(nombre, apellidos, email);
+
+                // Direccion (la crea el contacto)
+                System.out.println("\n--- Dirección ---");
+                TipoVia tipoVia = elegirTipoVia(sc);
+                int numero = leerEntero(sc, "Número: ");
+                String bloque = leerTexto(sc, "Bloque (opcional): ");
+                String escalera = leerTexto(sc, "Escalera (opcional): ");
+                String portal = leerTexto(sc, "Portal (opcional): ");
+                String letra = leerTexto(sc, "Letra (opcional): ");
+                c.definirDireccion(tipoVia, numero, bloque, escalera, portal, letra);
+
+                int cuantos = leerEntero(sc, "¿Cuántos teléfonos quieres añadir ahora? (0..n): ");
+                int i = 0;
+                while (i < cuantos) {
+                    System.out.println("\n--- Teléfono ---");
+                    String numTel = leerTextoNoVacio(sc, "Número de teléfono: ");
+                    TipoTelefono tipoTel = elegirTipoTelefono(sc);
+                    c.agregarTelefono(numTel, tipoTel);
+                    i++;
+                }
+
+                System.out.println("Contacto añadido con ID " + c.getId());            	
 
             } else if (opcion == 2) {
                 List<Contacto> contactos = agenda.listarContactos();
@@ -60,8 +101,14 @@ public class Main {
                 if (c == null) {
                     System.out.println("No existe un contacto con ese ID.");
                 } else {
-                    Telefono t = crearTelefono(sc);
-                    c.agregarTelefono(t);
+                	// DCS: Antes...
+                    //Telefono t = crearTelefono(sc);
+                    //c.agregarTelefono(t);
+                	
+                    String numTel = leerTextoNoVacio(sc, "Número de teléfono: ");
+                    TipoTelefono tipoTel = elegirTipoTelefono(sc);
+                    c.agregarTelefono(numTel, tipoTel);                	
+                	
                     System.out.println("Teléfono añadido.");
                 }
 
@@ -87,8 +134,8 @@ public class Main {
         System.out.println("==============================");
     }
 
-    // ---------- Creación de objetos desde consola ----------
-
+    // DCS: Ya no hay creación de objetos desde aquí...
+    /*
     private static Contacto crearContacto(Scanner sc, int id) {
         String nombre = leerTextoNoVacio(sc, "Nombre: ");
         String apellidos = leerTextoNoVacio(sc, "Apellidos: ");
@@ -134,7 +181,8 @@ public class Main {
         Telefono t = new Telefono(numero, tipo);
         return t;
     }
-
+	*/
+    
     private static TipoVia elegirTipoVia(Scanner sc) {
         System.out.println("Tipo de vía:");
         TipoVia[] valores = TipoVia.values();

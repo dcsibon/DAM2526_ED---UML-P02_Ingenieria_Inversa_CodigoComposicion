@@ -1,6 +1,6 @@
-package agenda;
+package agenda.dominio;
 
-class Direccion {
+class Direccion { // DCS: Sin public solo accesible dentro del paquete dominio
     private TipoVia tipoVia;
     private int numero;
     private String bloque;
@@ -8,7 +8,8 @@ class Direccion {
     private String portal;
     private String letra;
 
-    public Direccion(TipoVia tipoVia, int numero, String bloque, String escalera, String portal, String letra) {
+    // DCS: Sin public, solo Contacto (mismo paquete dominio) puede crear Direccion
+    Direccion(TipoVia tipoVia, int numero, String bloque, String escalera, String portal, String letra) {
         this.tipoVia = tipoVia;
         this.numero = numero;
         this.bloque = bloque;

@@ -1,23 +1,35 @@
-package agenda;
+package agenda.dominio;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class Contacto {
+public class Contacto {
     private int id;
     private String nombre;
     private String apellidos;
     private String email;
+
+    // DCS: Composición - Contacto "posee" Direccion y Telefonos
     private Direccion direccion;
     private List<Telefono> telefonos;
 
-    public Contacto(int id, String nombre, String apellidos, String email, Direccion direccion) {
+    // DCS: Sin public, solo Agenda (mismo paquete dominio) puede crear Contacto
+    Contacto(int id, String nombre, String apellidos, String email) {
         this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.email = email;
-        this.direccion = direccion;
         this.telefonos = new ArrayList<>();
+    }
+
+    // DCS: Contacto CREA su direccion (composición)
+    public void definirDireccion(TipoVia tipoVia, int numero, String bloque, String escalera, String portal, String letra) {
+        this.direccion = new Direccion(tipoVia, numero, bloque, escalera, portal, letra);
+    }
+
+    // DCS: Contacto CREA sus teléfonos (composición)
+    public void agregarTelefono(String numero, TipoTelefono tipo) {
+        this.telefonos.add(new Telefono(numero, tipo));
     }
 
     public int getId() {
