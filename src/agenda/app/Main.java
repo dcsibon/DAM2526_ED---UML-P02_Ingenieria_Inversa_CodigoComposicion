@@ -14,16 +14,16 @@ import agenda.dominio.TipoTelefono;
 import agenda.dominio.TipoVia;
 
 public class Main {
+	private static final Scanner SC = new Scanner(System.in);
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
 
         Agenda agenda = new Agenda();
         int opcion = -1;
 
         do {
             mostrarMenu();
-            opcion = leerEntero(sc, "Opción: ");
+            opcion = leerEntero("Opción: ");
 
             if (opcion == 1) {
             	// DCS: Ahora NO se puede hacer new Contacto(...) desde aquí
@@ -33,33 +33,8 @@ public class Main {
                 //agenda.agregarContacto(nuevo);
                 //System.out.println("Contacto añadido con ID " + nuevo.getId());
             	
-                String nombre = leerTextoNoVacio(sc, "Nombre: ");
-                String apellidos = leerTextoNoVacio(sc, "Apellidos: ");
-                String email = leerTexto(sc, "Email (opcional): ");
-
-                Contacto c = agenda.crearContacto(nombre, apellidos, email);
-
-                // Direccion (la crea el contacto)
-                System.out.println("\n--- Dirección ---");
-                TipoVia tipoVia = elegirTipoVia(sc);
-                int numero = leerEntero(sc, "Número: ");
-                String bloque = leerTexto(sc, "Bloque (opcional): ");
-                String escalera = leerTexto(sc, "Escalera (opcional): ");
-                String portal = leerTexto(sc, "Portal (opcional): ");
-                String letra = leerTexto(sc, "Letra (opcional): ");
-                c.definirDireccion(tipoVia, numero, bloque, escalera, portal, letra);
-
-                int cuantos = leerEntero(sc, "¿Cuántos teléfonos quieres añadir ahora? (0..n): ");
-                int i = 0;
-                while (i < cuantos) {
-                    System.out.println("\n--- Teléfono ---");
-                    String numTel = leerTextoNoVacio(sc, "Número de teléfono: ");
-                    TipoTelefono tipoTel = elegirTipoTelefono(sc);
-                    c.agregarTelefono(numTel, tipoTel);
-                    i++;
-                }
-
-                System.out.println("Contacto añadido con ID " + c.getId());            	
+            	Contacto nuevo = crearContacto(agenda);
+                System.out.println("Contacto añadido con ID " + nuevo.getId());            	
 
             } else if (opcion == 2) {
                 List<Contacto> contactos = agenda.listarContactos();
@@ -73,7 +48,7 @@ public class Main {
                 }
 
             } else if (opcion == 3) {
-                String texto = leerTextoNoVacio(sc, "Buscar por nombre/apellidos: ");
+                String texto = leerTextoNoVacio("Buscar por nombre/apellidos: ");
                 List<Contacto> resultados = agenda.buscarPorNombre(texto);
 
                 if (resultados.isEmpty()) {
@@ -86,7 +61,7 @@ public class Main {
                 }
 
             } else if (opcion == 4) {
-                int id = leerEntero(sc, "ID del contacto a borrar: ");
+                int id = leerEntero("ID del contacto a borrar: ");
                 boolean borrado = agenda.eliminarContactoPorId(id);
                 if (borrado) {
                     System.out.println("Contacto borrado.");
@@ -95,7 +70,7 @@ public class Main {
                 }
 
             } else if (opcion == 5) {
-                int id = leerEntero(sc, "ID del contacto al que añadir teléfono: ");
+                int id = leerEntero("ID del contacto al que añadir teléfono: ");
                 Contacto c = agenda.obtenerPorId(id);
 
                 if (c == null) {
@@ -105,8 +80,8 @@ public class Main {
                     //Telefono t = crearTelefono(sc);
                     //c.agregarTelefono(t);
                 	
-                    String numTel = leerTextoNoVacio(sc, "Número de teléfono: ");
-                    TipoTelefono tipoTel = elegirTipoTelefono(sc);
+                    String numTel = leerTextoNoVacio("Número de teléfono: ");
+                    TipoTelefono tipoTel = elegirTipoTelefono();
                     c.agregarTelefono(numTel, tipoTel);                	
                 	
                     System.out.println("Teléfono añadido.");
@@ -120,7 +95,7 @@ public class Main {
 
         } while (opcion != 0);
 
-        sc.close();
+        SC.close();
     }
 
     private static void mostrarMenu() {
@@ -135,55 +110,45 @@ public class Main {
     }
 
     // DCS: Ya no hay creación de objetos desde aquí...
-    /*
-    private static Contacto crearContacto(Scanner sc, int id) {
-        String nombre = leerTextoNoVacio(sc, "Nombre: ");
-        String apellidos = leerTextoNoVacio(sc, "Apellidos: ");
-        String email = leerTexto(sc, "Email (opcional): ");
+    
+    // DCS: Cambiamos los parámetros y pasamos la agenda para que llame al método de crear el contacto.
+    private static Contacto crearContacto(Agenda agenda) {
+        String nombre = leerTextoNoVacio("Nombre: ");
+        String apellidos = leerTextoNoVacio("Apellidos: ");
+        String email = leerTexto("Email (opcional): ");
 
-        Direccion direccion = crearDireccion(sc);
-
-        Contacto c = new Contacto(id, nombre, apellidos, email, direccion);
-
-        int cuantos = leerEntero(sc, "¿Cuántos teléfonos quieres añadir ahora? (0..n): ");
-        int i = 0;
-        while (i < cuantos) {
-            Telefono t = crearTelefono(sc);
-            c.agregarTelefono(t);
-            i++;
-        }
-
+        Contacto c = agenda.agregarContacto(nombre, apellidos, email);
+    	crearDireccion(c);
+        crearTelefonos(c);
+        
         return c;
     }
 
-    private static Direccion crearDireccion(Scanner sc) {
+    private static void crearDireccion(Contacto c) {
+        // Direccion (la crea el contacto)
         System.out.println("\n--- Dirección ---");
-
-        TipoVia tipoVia = elegirTipoVia(sc);
-
-        int numero = leerEntero(sc, "Número: ");
-
-        String bloque = leerTexto(sc, "Bloque (opcional): ");
-        String escalera = leerTexto(sc, "Escalera (opcional): ");
-        String portal = leerTexto(sc, "Portal (opcional): ");
-        String letra = leerTexto(sc, "Letra (opcional): ");
-
-        Direccion d = new Direccion(tipoVia, numero, bloque, escalera, portal, letra);
-        return d;
+        TipoVia tipoVia = elegirTipoVia();
+        int numero = leerEntero("Número: ");
+        String bloque = leerTexto("Bloque (opcional): ");
+        String escalera = leerTexto("Escalera (opcional): ");
+        String portal = leerTexto("Portal (opcional): ");
+        String letra = leerTexto("Letra (opcional): ");
+        c.definirDireccion(tipoVia, numero, bloque, escalera, portal, letra);
     }
 
-    private static Telefono crearTelefono(Scanner sc) {
-        System.out.println("\n--- Teléfono ---");
-
-        String numero = leerTextoNoVacio(sc, "Número de teléfono: ");
-        TipoTelefono tipo = elegirTipoTelefono(sc);
-
-        Telefono t = new Telefono(numero, tipo);
-        return t;
+    private static void crearTelefonos(Contacto c) {
+        int cuantos = leerEntero("¿Cuántos teléfonos quieres añadir ahora? (0..n): ");
+        int i = 0;
+        while (i < cuantos) {
+            System.out.println("\n--- Teléfono ---");
+            String numTel = leerTextoNoVacio("Número de teléfono: ");
+            TipoTelefono tipoTel = elegirTipoTelefono();
+            c.agregarTelefono(numTel, tipoTel);
+            i++;
+        }
     }
-	*/
     
-    private static TipoVia elegirTipoVia(Scanner sc) {
+    private static TipoVia elegirTipoVia() {
         System.out.println("Tipo de vía:");
         TipoVia[] valores = TipoVia.values();
 
@@ -193,11 +158,11 @@ public class Main {
             i++;
         }
 
-        int opcion = leerEnteroRango(sc, "Elige tipo (1-" + valores.length + "): ", 1, valores.length);
+        int opcion = leerEnteroRango("Elige tipo (1-" + valores.length + "): ", 1, valores.length);
         return valores[opcion - 1];
     }
 
-    private static TipoTelefono elegirTipoTelefono(Scanner sc) {
+    private static TipoTelefono elegirTipoTelefono() {
         System.out.println("Tipo de teléfono:");
         TipoTelefono[] valores = TipoTelefono.values();
 
@@ -207,23 +172,23 @@ public class Main {
             i++;
         }
 
-        int opcion = leerEnteroRango(sc, "Elige tipo (1-" + valores.length + "): ", 1, valores.length);
+        int opcion = leerEnteroRango("Elige tipo (1-" + valores.length + "): ", 1, valores.length);
         return valores[opcion - 1];
     }
 
     // ---------- Utilidades de lectura (consola) ----------
 
-    private static String leerTexto(Scanner sc, String mensaje) {
+    private static String leerTexto(String mensaje) {
         System.out.print(mensaje);
-        String texto = sc.nextLine();
+        String texto = SC.nextLine();
         return texto.trim();
     }
 
-    private static String leerTextoNoVacio(Scanner sc, String mensaje) {
+    private static String leerTextoNoVacio(String mensaje) {
         String texto = "";
         while (texto.isBlank()) {
             System.out.print(mensaje);
-            texto = sc.nextLine();
+            texto = SC.nextLine();
             texto = texto.trim();
             if (texto.isBlank()) {
                 System.out.println("ERROR - No puede estar vacío.");
@@ -232,13 +197,13 @@ public class Main {
         return texto;
     }
 
-    private static int leerEntero(Scanner sc, String mensaje) {
+    private static int leerEntero(String mensaje) {
         int numero = 0;
         boolean ok = false;
 
         while (!ok) {
             System.out.print(mensaje);
-            String texto = sc.nextLine();
+            String texto = SC.nextLine();
             texto = texto.trim();
 
             try {
@@ -251,11 +216,11 @@ public class Main {
         return numero;
     }
 
-    private static int leerEnteroRango(Scanner sc, String mensaje, int min, int max) {
-        int numero = leerEntero(sc, mensaje);
+    private static int leerEnteroRango(String mensaje, int min, int max) {
+        int numero = leerEntero(mensaje);
         while (numero < min || numero > max) {
             System.out.println("ERROR - Debe estar entre " + min + " y " + max + ".");
-            numero = leerEntero(sc, mensaje);
+            numero = leerEntero(mensaje);
         }
         return numero;
     }

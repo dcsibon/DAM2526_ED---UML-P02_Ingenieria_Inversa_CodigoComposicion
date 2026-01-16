@@ -8,7 +8,7 @@ class Direccion { // DCS: Sin public solo accesible dentro del paquete dominio
     private String portal;
     private String letra;
 
-    // DCS: Sin public, solo Contacto (mismo paquete dominio) puede crear Direccion
+    // DCS: Sin public, solo el dominio puede crear Direccion
     Direccion(TipoVia tipoVia, int numero, String bloque, String escalera, String portal, String letra) {
         this.tipoVia = tipoVia;
         this.numero = numero;
