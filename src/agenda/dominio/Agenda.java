@@ -20,12 +20,12 @@ public class Agenda {
     }
 
     // DCS: Agenda CREA el contacto (composición)
-    public Contacto agregarContacto(String nombre, String apellidos, String email) {
+    public Contacto crearContacto(String nombre, String apellidos, String email) {
         int id = getSiguienteId();
 
-        Contacto c = new Contacto(id, nombre, apellidos, email);
-        this.contactos.add(c);
-        return c;
+        Contacto nuevoContacto = new Contacto(id, nombre, apellidos, email);
+        this.contactos.add(nuevoContacto);
+        return nuevoContacto;
     }
 
     public List<Contacto> listarContactos() {
