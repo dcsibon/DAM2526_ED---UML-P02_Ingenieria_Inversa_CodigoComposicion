@@ -117,14 +117,14 @@ public class Main {
         String apellidos = leerTextoNoVacio("Apellidos: ");
         String email = leerTexto("Email (opcional): ");
 
-        Contacto c = agenda.agregarContacto(nombre, apellidos, email);
-    	crearDireccion(c);
-        crearTelefonos(c);
+        Contacto nuevoContacto = agenda.crearContacto(nombre, apellidos, email);
+    	crearDireccion(nuevoContacto);
+        crearTelefonos(nuevoContacto);
         
-        return c;
+        return nuevoContacto;
     }
 
-    private static void crearDireccion(Contacto c) {
+    private static void crearDireccion(Contacto contacto) {
         // Direccion (la crea el contacto)
         System.out.println("\n--- Dirección ---");
         TipoVia tipoVia = elegirTipoVia();
@@ -133,17 +133,17 @@ public class Main {
         String escalera = leerTexto("Escalera (opcional): ");
         String portal = leerTexto("Portal (opcional): ");
         String letra = leerTexto("Letra (opcional): ");
-        c.definirDireccion(tipoVia, numero, bloque, escalera, portal, letra);
+        contacto.definirDireccion(tipoVia, numero, bloque, escalera, portal, letra);
     }
 
-    private static void crearTelefonos(Contacto c) {
+    private static void crearTelefonos(Contacto contacto) {
         int cuantos = leerEntero("¿Cuántos teléfonos quieres añadir ahora? (0..n): ");
         int i = 0;
         while (i < cuantos) {
             System.out.println("\n--- Teléfono ---");
             String numTel = leerTextoNoVacio("Número de teléfono: ");
             TipoTelefono tipoTel = elegirTipoTelefono();
-            c.agregarTelefono(numTel, tipoTel);
+            contacto.agregarTelefono(numTel, tipoTel);
             i++;
         }
     }
